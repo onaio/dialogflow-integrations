@@ -41,7 +41,7 @@ function telegramToDetectIntent(telegramRequest, sessionPath) {
     session: sessionPath,
     queryInput: {
       text: {
-        text: telegramRequest.message.text,
+        text: telegramRequest.message.text || JSON.stringify(telegramRequest.message.location),
       },
       languageCode,
     }
