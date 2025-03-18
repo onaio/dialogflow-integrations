@@ -39,14 +39,27 @@ const client = new SessionsClient(
 
 // Converts Telgram request to a detectIntent request.
 function telegramToDetectIntent(telegramRequest, sessionPath) {
+  let textInput = telegramRequest.message.text || JSON.stringify(telegramRequest.message.location);
+
+  let parameters = {};
+  if (telegramRequest?.message?.contact?.phone_number) {
+    parameters['phoneNumber'] = {stringValue: telegramRequest.message.contact.phone_number};
+    textInput = 'successfully acquired phone number';
+  }
+
   const request = {
     session: sessionPath,
     queryInput: {
       text: {
-        text: telegramRequest.message.text || JSON.stringify(telegramRequest.message.location),
+        text: textInput,
       },
       languageCode,
-    }
+    },
+    queryParams: {
+      parameters: {
+        fields: parameters,
+      },
+    },
   };
 
   return request;
